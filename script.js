@@ -1,25 +1,29 @@
-function mincost(arr)
-{ 
-//write your code here
-// return the min cost
-	arr.sort((a,b) =>a-b);
-	let totalCost = 0;
-	let n = arr.length;
+const express = require("express");
+const app = express();
+app.use(express.json());
 
+app.post("/mincost", (req, res) => {
+  const arr = req.body.arr;
+  if (!Array.isArray(arr)) {
+    return res.status(400).json({ message: null });
+  }
 
-	for(let i=0; i<n; i++){
+  // Min cost using a for loop and sort
+  arr.sort((a, b) => a - b);
+  let totalCost = 0;
 
-		let first = arr.shift();
-		let second = arr.shift();
+  for (let i = 0; i < arr.length - 1; i++) {
+    const first = arr.shift();
+    const second = arr.shift();
+    const cost = first + second;
+    totalCost += cost;
+    arr.push(cost);
+    arr.sort((a, b) => a - b);
+  }
 
-		let cost = first + second;
-		totalCost += cost;
+  res.json({ message: totalCost });
+});
 
-		arr.push(cost);
-
-		arr.sort((a,b) => a - b);
-	}
-  return totalCost;
-}
-
-module.exports=mincost;
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+});
